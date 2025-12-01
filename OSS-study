@@ -1,0 +1,156 @@
+요청하신 GitHub 리포지토리 `ai7dnn/2025-OSS` (2025학년도 오픈소스소프트웨어 교과목)의 파일 목록과 `README.md`, 그리고 파일명(`01주...`, `05주...`, `cheat sheet` 등)을 바탕으로, 해당 강의 자료들이 다루고 있는 **Git과 GitHub의 핵심 내용**을 아주 상세하게 정리해 드립니다.
+
+이 리포지토리는 오픈소스 소프트웨어(OSS) 수업을 위해 구성되어 있으며, \*\*Git 설치 및 설정부터 기본 명령어, 그리고 GitHub를 이용한 협업(Pull Request)과 동기화(Sync Fork)\*\*까지의 과정을 체계적으로 다루고 있습니다.
+
+-----
+
+# 📂 Git & GitHub 완전 정복 (2025-OSS 강의 자료 요약)
+
+## 1\. Git 환경 설정 (Configuration)
+
+**출처:** `01주 3. 04. 2-1 깃 설치와 실행.pdf`, `README.md`
+
+Git을 설치한 후 가장 먼저 해야 할 일은 사용자 정보와 환경을 설정하는 것입니다. 리포지토리의 `README.md`에는 Windows 환경을 기준으로 한 권장 설정 명령어가 명시되어 있습니다.
+
+### 1.1 설정 범위 (Scope)
+
+Git 설정은 세 가지 레벨로 적용되며, 우선순위는 **Local \> Global \> System** 순입니다.
+
+  * **System (`--system`)**: 시스템의 모든 사용자와 모든 저장소에 적용 (관리자 권한 필요).
+  * **Global (`--global`)**: 현재 사용자에게 적용 (가장 많이 사용됨).
+  * **Local (`--local`)**: 특정 저장소(Repository)에만 적용.
+
+### 1.2 필수 설정 명령어
+
+강의 자료에서 권장하는 주요 설정 명령어들은 다음과 같습니다. (터미널 또는 Git Bash에서 실행)
+
+1.  **사용자 정보 등록** (커밋 실명제)
+
+    ```bash
+    git config --global user.name "본인이름"   # 예: ai7dnn
+    git config --global user.email "본인이메일" # 예: ai7dnn@gmail.com
+    ```
+
+      * 커밋 기록에 남을 이름과 이메일을 설정합니다. GitHub 계정과 동일한 이메일을 사용하는 것이 좋습니다.
+
+2.  **줄바꿈 문자(End of Line) 처리**
+
+    ```bash
+    git config --global core.autocrlf true
+    git config --global core.safecrlf false
+    ```
+
+      * **`core.autocrlf true`**: Windows와 Mac/Linux는 줄바꿈 문자가 다릅니다(Windows: CRLF, Mac: LF). 이 옵션을 켜면, Windows에서 커밋할 때는 CRLF를 LF로 자동 변환하고, 체크아웃할 때는 LF를 CRLF로 변환하여 협업 시 줄바꿈 충돌을 방지합니다.
+
+3.  **기본 에디터 및 브랜치 설정**
+
+    ```bash
+    git config --global core.editor 'code --wait'
+    git config --global init.defaultBranch main
+    ```
+
+      * **`core.editor`**: Git에서 메시지를 작성할 때 사용할 에디터를 지정합니다. `code --wait`은 VS Code를 사용하며, 파일을 닫을 때까지 터미널이 대기하도록 합니다.
+      * **`init.defaultBranch main`**: 새로운 저장소를 만들 때 기본 브랜치 이름을 `master` 대신 `main`으로 설정합니다. (최신 트렌드 반영)
+
+-----
+
+## 2\. Git 기본 명령어 (Cheat Sheet & Basics)
+
+**출처:** `20241002 git cheat sheet by kang.pdf`, `01주...`
+
+Git을 이용해 파일의 버전을 관리하는 기본적인 흐름(Workflow)입니다.
+
+### 2.1 저장소 생성 및 가져오기
+
+  * **`git init`**: 현재 폴더를 Git 저장소로 초기화합니다. `.git`이라는 숨김 폴더가 생성됩니다.
+  * **`git clone [URL]`**: 원격 저장소(GitHub 등)에 있는 프로젝트를 내 컴퓨터로 복제해옵니다.
+
+### 2.2 버전 관리의 3단계 흐름
+
+Git은 **작업 디렉토리(Working Directory)** -\> **스테이징 영역(Staging Area)** -\> \*\*저장소(Repository)\*\*의 3단계를 거쳐 버전을 저장합니다.
+
+1.  **작업 내용 감지**
+
+      * **`git status`**: 현재 파일들의 상태(수정됨, 추적 안 됨 등)를 확인합니다. 가장 자주 사용해야 하는 명령어입니다.
+
+2.  **버전 기록 준비 (Staging)**
+
+      * **`git add [파일명]`**: 특정 파일을 스테이징 영역에 올립니다.
+      * **`git add .`**: 변경된 모든 파일을 스테이징 영역에 올립니다.
+
+3.  **버전 확정 (Commit)**
+
+      * **`git commit -m "메시지"`**: 스테이징 영역의 변경 사항들을 하나의 버전으로 저장합니다. 메시지는 변경 내용을 명확하게 작성해야 합니다.
+
+4.  **기록 확인**
+
+      * **`git log`**: 커밋 히스토리(누가, 언제, 무엇을 수정했는지)를 조회합니다.
+      * **`git diff`**: 파일의 구체적인 변경 내용(코드 차이)을 확인합니다.
+
+-----
+
+## 3\. GitHub 협업과 Pull Request (PR)
+
+**출처:** `05주 Pull Request 기초.pdf`
+
+이 수업의 핵심 중 하나인 \*\*Pull Request(PR)\*\*는 오픈소스에 기여하거나 팀 프로젝트를 할 때 필수적인 과정입니다.
+
+### 3.1 협업의 기본 개념
+
+  * **Fork**: 타인의 원격 저장소를 내 GitHub 계정으로 그대로 복제해오는 기능입니다. 원본 저장소에 직접 권한이 없을 때 사용합니다.
+  * **Clone**: 내 GitHub(Fork 뜬 저장소)에서 내 PC(로컬)로 코드를 가져옵니다.
+  * **Remote**: 로컬 저장소와 연결된 원격 저장소를 지칭합니다. 보통 `origin`은 내 원격 저장소, `upstream`은 원본 원격 저장소를 의미합니다.
+
+### 3.2 Pull Request(PR) 단계별 가이드
+
+1.  **Fork**: 기여하고 싶은 오픈소스 저장소(Upstream)를 내 계정으로 Fork 합니다.
+2.  **Clone**: Fork 된 저장소를 로컬로 `git clone` 합니다.
+3.  **Branch 생성**: 작업을 시작하기 전, 기능별로 브랜치를 만듭니다. (Main 브랜치 직접 수정 지양)
+      * `git branch [브랜치명]`: 브랜치 생성
+      * `git switch [브랜치명]` 또는 `git checkout [브랜치명]`: 해당 브랜치로 이동
+4.  **작업 및 Commit**: 코드를 수정하고 `add`, `commit`을 진행합니다.
+5.  **Push**: 작업한 브랜치를 내 원격 저장소(`origin`)로 업로드합니다.
+      * `git push origin [브랜치명]`
+6.  **Pull Request 요청**: GitHub 웹사이트에 접속하면 "Compare & pull request" 버튼이 활성화됩니다. 내용을 작성하고 원본 저장소(Upstream) 관리자에게 병합(Merge)을 요청합니다.
+
+### 3.3 협업 기능
+
+  * **Issue (이슈)**: 버그 제보, 기능 요청, 할 일 등을 논의하는 게시판입니다.
+  * **Milestone (마일스톤)**: 이슈들을 그룹화하여 진행 상황을 관리하는 이정표입니다.
+  * **Label (레이블)**: 이슈나 PR의 성격(bug, enhancement 등)을 분류하는 태그입니다.
+
+-----
+
+## 4\. 고급 기능: Fork 저장소 동기화
+
+**출처:** `sync-fork.md`
+
+Fork 한 저장소는 원본 저장소(Upstream)가 업데이트되어도 자동으로 갱신되지 않습니다. 직접 동기화(Sync)를 해줘야 합니다.
+
+### 동기화 방법
+
+1.  **Upstream 원격지 추가** (처음 한 번만 수행)
+    ```bash
+    git remote add upstream [원본_저장소_URL]
+    ```
+2.  **원본 내용 가져오기**
+    ```bash
+    git fetch upstream
+    ```
+3.  **병합하기 (Merge)**
+      * 내 로컬의 `main` 브랜치로 이동: `git switch main`
+      * 가져온 원본 내용을 내 `main`에 합치기: `git merge upstream/main`
+4.  **내 원격 저장소 업데이트**
+      * `git push origin main`
+
+-----
+
+## 💡 요약: 이 수업에서 기대하는 학습 목표
+
+이 리포지토리의 자료들은 단순한 코딩을 넘어 \*\*"소프트웨어의 사회적 협업"\*\*을 강조하고 있습니다.
+
+  * 개인은 **Git**을 통해 코드의 역사를 꼼꼼히 기록(잔디 심기)하고,
+  * **GitHub**를 통해 타인의 코드에 기여(Pull Request)하며,
+  * **Issue와 Project** 기능을 통해 체계적으로 소통하는 개발자로 성장하는 것을 목표로 합니다.
+
+특히 `05주 Pull Request 기초` 자료는 오픈소스 생태계에 참여하는 첫걸음인 만큼, **Fork -\> Branch -\> Commit -\> PR** 로 이어지는 사이클을 완벽히 숙지하는 것이 중요합니다.
